@@ -1,13 +1,32 @@
 ## Project Dependencies
 
-Install project dependencies using a package manager
-
-Current dependencies include:
+Install project dependencies:
 
 + `go`
 + `curl`
 + `jq`
 
+---
+
+## Execute Tests
+
+Run the below commands from the project root
+
++ Record coverage for dedicated test package
+
+  ```zsh
+  go test ./tests/... -coverprofile=coverage.out -coverpkg ./...
+  ```
+
++ Generate HTML report from coverage data
+
+  ```zsh
+  go tool cover -html=coverage.out
+  ```
+
++ View the HTML file in a browser
+
+---
 
 ## Run Application
 
@@ -30,4 +49,10 @@ Run the below commands from the project root
 
   ```zsh
   ./scripts/curl_requests.sh
+  ```
+
+  or
+
+  ```zsh
+  make
   ```
