@@ -1,16 +1,17 @@
 package main
 
 import (
-	"fmt"
 	"log"
 	"net/http"
 	"time"
+
+	"mockroblog/pkg/routes"
 )
 
 
 func main() {
 	mux := http.NewServeMux()
-	mux.HandleFunc("/hello", hello)
+	mux.HandleFunc("/", routes.Serve)
 
 	srv := &http.Server{
 		Addr: "localhost:8080",
@@ -23,9 +24,4 @@ func main() {
 	if err != nil {
 		log.Fatalf("Error starting HTTP server: %v", err)
 	}
-}
-
-
-func hello(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprint(w, "Hello, World!\n")
 }
