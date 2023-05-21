@@ -8,7 +8,7 @@ import (
 	"mockroblog/pkg/routes"
 )
 
-func TestHello(t *testing.T) {
+func TestHelloHandler(t *testing.T) {
 	testcases := []struct{
 		description string
 		method string
