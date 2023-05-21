@@ -22,7 +22,7 @@ jobs:
       run: go test -v ./tests/*
 
     - name: Code Coverage
-      run: go test ./tests/* -race -coverprofile=coverage.out -covermode=atomic
+      run: go test ./tests/... -coverprofile=cover.out -coverpkg ./...
 
     - name: Upload data to Codecov
       uses: codecov/codecov-action@v3
