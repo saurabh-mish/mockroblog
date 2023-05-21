@@ -1,3 +1,3 @@
 # hello world
-echo "Hello world endpoint"
+echo "---- Hitting the 'Hello, World!' endpoint ----"
 curl http://localhost:8080/hello
