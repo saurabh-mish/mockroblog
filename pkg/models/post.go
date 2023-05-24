@@ -13,3 +13,5 @@ type Post struct {
 	Upvotest int `json:"upvotes"`
 	Downvotes int `json:"downvotes"`
 }
+
+type Posts []Post
