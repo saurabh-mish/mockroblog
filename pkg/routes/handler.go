@@ -11,7 +11,10 @@ import (
 func Hello(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/plain")
 	w.WriteHeader(http.StatusOK)
-	w.Write([]byte("Hello, World!\n"))
+	_, err := w.Write([]byte("Hello, World!\n"))
+	if err != nil {
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+	}
 }
 
 
@@ -23,13 +26,8 @@ func AllUsers(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.Header().Set("Content-Type", "application/json")
-	err := json.NewEncoder(w).Encode(&allUsersJSON)
-
-	if err != nil {
-		http.Error(w, "Unable to parse data", http.StatusInternalServerError)
-		return
-	}
-	//w.WriteHeader(http.StatusOK)    // superfluous response.WriteHeader call
+	w.WriteHeader(http.StatusOK)
+	json.NewEncoder(w).Encode(&allUsersJSON)
 }
 
 
@@ -39,13 +37,12 @@ func AllPosts(w http.ResponseWriter, r *http.Request) {
 		{nil, "title 2", "filler content for post 2", "community 2", "user1", "bit.ly/sa98", time.Time{}, 11, 4},
 	}
 
-	allPostsJSON, err := json.Marshal(allPosts)
-	if err != nil {
-		http.Error(w, "Unable to parse data", http.StatusInternalServerError)
-		return
-	}
+	allPostsJSON, _ := json.Marshal(allPosts)
 
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
-	w.Write([]byte(allPostsJSON))
+	_, err := w.Write([]byte(allPostsJSON))
+	if err != nil {
+		http.Error(w, "Internal server error", http.StatusInternalServerError)
+	}
 }
