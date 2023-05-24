@@ -14,6 +14,7 @@ func Hello(w http.ResponseWriter, r *http.Request) {
 	_, err := w.Write([]byte("Hello, World!\n"))
 	if err != nil {
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
 	}
 }
 
@@ -30,6 +31,7 @@ func AllUsers(w http.ResponseWriter, r *http.Request) {
 	err := json.NewEncoder(w).Encode(&allUsersJSON)
 	if err != nil {
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
 	}
 }
 
@@ -47,5 +49,6 @@ func AllPosts(w http.ResponseWriter, r *http.Request) {
 	_, err := w.Write([]byte(allPostsJSON))
 	if err != nil {
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
+		return
 	}
 }
