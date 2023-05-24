@@ -2,8 +2,8 @@ package routes
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
+	"time"
 
 	"mockroblog/pkg/models"
 )
@@ -11,7 +11,7 @@ import (
 func Hello(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/plain")
 	w.WriteHeader(http.StatusOK)
-	fmt.Fprint(w, "Hello, World!\n")
+	w.Write([]byte("Hello, World!\n"))
 }
 
 
@@ -23,12 +23,29 @@ func AllUsers(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.Header().Set("Content-Type", "application/json")
-
-	// http.ResponseWriter.Write implicitly calls w.WriteHeader(http.StatusOK)
 	err := json.NewEncoder(w).Encode(&allUsersJSON)
 
 	if err != nil {
 		http.Error(w, "Unable to parse data", http.StatusInternalServerError)
+		return
 	}
 	//w.WriteHeader(http.StatusOK)    // superfluous response.WriteHeader call
+}
+
+
+func AllPosts(w http.ResponseWriter, r *http.Request) {
+	allPosts := models.Posts{
+		{nil, "title 1", "filler content for post 1", "community 1", "user1", "bit.ly/sa12", time.Time{}, 10, 2},
+		{nil, "title 2", "filler content for post 2", "community 2", "user1", "bit.ly/sa98", time.Time{}, 11, 4},
+	}
+
+	allPostsJSON, err := json.Marshal(allPosts)
+	if err != nil {
+		http.Error(w, "Unable to parse data", http.StatusInternalServerError)
+		return
+	}
+
+	w.Header().Set("Content-Type", "application/json")
+	w.WriteHeader(http.StatusOK)
+	w.Write([]byte(allPostsJSON))
 }
