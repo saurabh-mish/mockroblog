@@ -7,3 +7,5 @@ type User struct {
 	Password string `json:"-"`
 	Karma int `json:"karma"`
 }
+
+type Users []User
