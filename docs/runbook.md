@@ -12,19 +12,25 @@ Install project dependencies:
 
 Run the below commands from the project root
 
++ Run tests
+
+  ```zsh
+  make exectests
+  ```
+
 + Record coverage for dedicated test package
 
   ```zsh
-  go test ./tests/... -coverprofile=coverage.out -coverpkg ./...
+  make coverage
   ```
 
 + Generate HTML report from coverage data
 
   ```zsh
-  go tool cover -html=coverage.out
+  make report
   ```
 
-+ View the HTML file in a browser
++ View the HTML file `coverage.html` in a browser
 
 ---
 
@@ -46,13 +52,6 @@ Run the below commands from the project root
 
 + In a new terminal tab, execute `curl` requests for existing endpoints
 
-
   ```zsh
   ./scripts/curl_requests.sh
-  ```
-
-  or
-
-  ```zsh
-  make
   ```
