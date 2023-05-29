@@ -18,10 +18,6 @@ jobs:
       with:
         go-version: 1.19
 
-    - name: Prepare SQLite database
-      run: |
-        sqlite3 mockroblog.db < ./init/schema.sql
-
     - name: Test
       run: go test -v ./tests/*
 
