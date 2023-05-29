@@ -40,4 +40,12 @@ func TestGetRepository(t *testing.T) {
 			t.Errorf("Tables 'user' and 'post' are not present in the database")
 		}
 	})
+
+	t.Run("check open connections after closing database", func(t *testing.T) {
+		sqlitedb.Close()
+
+		if sqlitedb.Stats().OpenConnections != 0 {
+			t.Errorf("Unable to close database connections ... %v", sqlitedb.Stats().OpenConnections)
+		}
+	})
 }
