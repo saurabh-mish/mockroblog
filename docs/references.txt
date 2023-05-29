@@ -1,2 +1,5 @@
 HTTP Routing Approaches:
 https://benhoyt.com/writings/go-routing/
+
+Learn Go with Tests - JSON, routing, and embedding
+https://quii.gitbook.io/learn-go-with-tests/build-an-application/json
