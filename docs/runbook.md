@@ -14,7 +14,7 @@ Run the below commands from the project root
 
 + Download project dependencies. **There are no third-party libraries except an SQLite database driver and the official (and experimental) slice package.**
 
-  ```
+  ```zsh
   go mod download
   ```
 
