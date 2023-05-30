@@ -1,6 +1,6 @@
 [![Tests](https://github.com/saurabh-mish/mockroblog/actions/workflows/test.yml/badge.svg)](https://github.com/saurabh-mish/mockroblog/actions/workflows/test.yml) &emsp;&emsp; [![Audit](https://github.com/saurabh-mish/mockroblog/actions/workflows/audit.yaml/badge.svg)](https://github.com/saurabh-mish/mockroblog/actions/workflows/audit.yaml) &emsp;&emsp; [![codecov](https://codecov.io/gh/saurabh-mish/mockroblog/branch/main/graph/badge.svg?token=BHAOSMITWR)](https://codecov.io/gh/saurabh-mish/mockroblog)
 
-# Reddit Backend
+# Mockroblog
 
 This project has services for a web application similar to Reddit.
 
