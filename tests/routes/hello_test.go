@@ -20,7 +20,7 @@ func TestHelloHandler(t *testing.T) {
 		{
 			description: "GET request on hello endpoint",
 			method: "GET",
-			path: "/hello",
+			path: "/api/v1/hello",
 			status: 200,
 			header: "text/plain",
 			body: "Hello, World!\n",
@@ -28,7 +28,7 @@ func TestHelloHandler(t *testing.T) {
 		{
 			description: "bad request on hello endpoint - with trailing /",
 			method: "GET",
-			path: "/hello/",
+			path: "/api/v1/hello/",
 			status: 404,
 			header: "text/plain; charset=utf-8",
 			body: "404 page not found\n",
@@ -36,7 +36,7 @@ func TestHelloHandler(t *testing.T) {
 		{
 			description: "incorrect method on hello endpoint",
 			method: "POST",
-			path: "/hello",
+			path: "/api/v1/hello",
 			status: 405,
 			header: "text/plain; charset=utf-8",
 			body: "405 method not allowed\n",
