@@ -19,6 +19,21 @@
   cat schema.sql | sqlite3 mockroblog.db
   ```
 
+  OR
+
+  ```zsh
+  sqlite3
+  .read mockroblog.db
+  ```
+
+  OR
+
+  ```zsh
+  sqlite3 mockroblog.db -init schema.sql
+  ```
+
+  `<` will exit the SQLite prompt immediately and return the error code to the shell, `.read` will leave the prompt up, and `-init` will always return 0. `<` is the best for scripting because it's cross-platform unlike `.read` which doesn't support Windows paths.
+
 + Open the newly created database in sqlite CLI
 
   ```zsh
