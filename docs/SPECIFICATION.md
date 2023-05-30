@@ -2,6 +2,8 @@
 
 We’re going to build services for a web application similar to [reddit][1].
 
+
+
 ## Development
 
 To get started, you will build two microservices for posting and voting functionality, with their automation test suites. After this, you will add two more microservices for account and messaging functionality and their automation test suites.
@@ -76,7 +78,6 @@ The following operations will be exposed:
 
 Messaging data can be in the same database as other services or a separate one.
 
----
 
 ### API
 
@@ -103,8 +104,6 @@ For example, a hypothetical service to manage customer information at a bank: A 
 | POST        | http://[hostname]/banktec/api/v1.0/ customer[customer_id, email]    | Update customer’s email            |
 
 
----
-
 ### Other
 
 **HTTP Status Codes**
@@ -129,8 +128,7 @@ Requests to each microservice must include all information necessary to complete
 
 Use The Python Standard Library’s [sqlite3][5] module as the database for your Flask application. You may use separate databases for each Flask application, or share a database across microservices.
 
----
----
+
 
 ## Testing and Automation
 
@@ -158,7 +156,6 @@ Each microservice should have an accompanying test script to verify that your ne
   pip3 install --user tavern
   ```
 
----
 
 ### System Testing
 
