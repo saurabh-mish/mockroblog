@@ -10,7 +10,7 @@ import (
 	"mockroblog/pkg/routes"
 )
 
-func TestGetAllUsersForHeader(t *testing.T) {
+func TestGetAllUsers(t *testing.T) {
 	testcases := []struct{
 		description string
 		method string
@@ -51,25 +51,15 @@ func TestGetAllUsersForHeader(t *testing.T) {
 			if recorder.Result().Header.Get("Content-Type") != tc.header {
 				t.Errorf("Incorrect header for %s: got %v, want %v", tc.description, recorder.Result().Header.Get("Content-Type"), tc.header)
 			}
+
+			if recorder.Code == 200 {
+				var userData models.Users
+				err = json.NewDecoder(recorder.Body).Decode(&userData)
+				if err != nil {
+					t.Errorf("Unable to parse response to structure: got %v, want %v", recorder.Body, userData)
+				}
+			}
 		})
-	}
-}
-
-
-func TestGetAllUsersForData(t *testing.T) {
-	recorder := httptest.NewRecorder()
-	request, err := http.NewRequest("GET", "/api/v1/users", nil)
-	if err != nil {
-		t.Fatalf("Error receiving response: %v", err)
-	}
-
-	routes.Serve(recorder, request)
-
-	var got models.Users
-
-	err = json.NewDecoder(recorder.Body).Decode(&got)
-	if err != nil {
-		t.Errorf("Unable to parse response from server: got %v, want %v", recorder.Body, err)
 	}
 }
 
