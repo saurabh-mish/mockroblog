@@ -7,8 +7,6 @@ import (
 	"strings"
 )
 
-type ctxKey struct{}
-
 type route struct {
 	method string
 	regex *regexp.Regexp
@@ -43,4 +41,12 @@ func Serve(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	http.NotFound(w, r)
+}
+
+
+type ctxKey struct{}
+
+func getField(r *http.Request, index int) string {
+	fields := r.Context().Value(ctxKey{}).([]string)
+	return fields[index]
 }
