@@ -5,6 +5,8 @@ import (
 	"net/http"
 	"strconv"
 	"fmt"
+	//"strings"
+	//"io"
 
 	"mockroblog/pkg/models"
 	"mockroblog/pkg/utils"
@@ -26,31 +28,68 @@ func GetAllUsers(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// func CreateUserWithQueryParams(w http.ResponseWriter, r *http.Request) {
+// 	// for param, value := range r.URL.Query() {
+// 	// 	log.Println(param, value)
+// 	// }
+
+// 	username := r.URL.Query().Get("username")
+// 	password := r.URL.Query().Get("password")
+// 	email := r.URL.Query().Get("email")
+
+// 	validData := utils.ValidateCreateUser(username, password, email)
+
+// 	if !validData {
+// 		http.Error(w, "Could not validate user data", http.StatusUnprocessableEntity)
+// 		return
+// 	} else {
+// 		w.Header().Set("Content-Type", "application/json")
+// 		w.WriteHeader(http.StatusOK)
+
+// 		_, err := w.Write([]byte("Welcome " + username + "!\nWe have sent a confirmation email to " + email + "\n"))
+// 		if err != nil {
+// 			http.Error(w, "Internal server error", http.StatusInternalServerError)
+// 			return
+// 		}
+// 	}
+// }
+
+
 func CreateUser(w http.ResponseWriter, r *http.Request) {
-	// for param, value := range r.URL.Query() {
-	// 	log.Println(param, value)
-	// }
+	if r.Header.Get("Content-Type") != "application/json" {
+		http.Error(w, "Request not acceptable; check header", http.StatusNotAcceptable)
+		return
+	}
 
-	username := r.URL.Query().Get("username")
-	password := r.URL.Query().Get("password")
-	email := r.URL.Query().Get("email")
+	var userData models.User
+	err := json.NewDecoder(r.Body).Decode(&userData)
 
-	validData := utils.ValidateCreateUser(username, password, email)
+	if err != nil {
+		http.Error(w, "Could not parse user payload", http.StatusUnprocessableEntity)
+		return
+	}
 
-	if !validData {
-		http.Error(w, "Could not validate user data", http.StatusUnprocessableEntity)
+	_, err = utils.ValidateCreateUser(userData.Username, userData.Password, userData.Email)
+
+	if err != nil {
+		http.Error(w, fmt.Sprint(err), http.StatusUnprocessableEntity)
 		return
 	} else {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
 
-		_, err := w.Write([]byte("Welcome " + username + "!\nWe have sent a confirmation email to " + email + "\n"))
+		_, err := w.Write([]byte("Welcome " + userData.Username + "!\nWe have sent a confirmation email to " + userData.Email + "\n"))
 		if err != nil {
 			http.Error(w, "Internal server error", http.StatusInternalServerError)
 			return
 		}
 	}
+
+	w.Header().Set("Content-Type", "application/json")
+	//w.WriteHeader(http.StatusOK)
+	fmt.Fprintf(w, "User created:\n%v", userData)
 }
+
 
 func RetrieveUser(w http.ResponseWriter, r *http.Request) {
 	id, err := strconv.ParseUint(getField(r, 0), 10, 16)
