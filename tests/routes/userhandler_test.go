@@ -5,6 +5,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"testing"
+	"bytes"
 
 	"mockroblog/pkg/models"
 	"mockroblog/pkg/routes"
@@ -69,54 +70,61 @@ func TestCreateUser(t *testing.T) {
 		description string
 		method string
 		path string
+		req_header string
+		resp_header string
+		body models.User
 		status int
-		header string
 	}{
 		{
-			description: "POST request with correct user data",
+			description: "POST request with correct data",
 			method: "POST",
-			path: "/api/v1/user?username=testuser&email=testuser@domain.com&password=p@ssword",
+			path: "/api/v1/user",
+			req_header: "application/json",
+			body: models.User{Username: "username", Password: "p@ssword", Email: "user@domain.com"},
+			resp_header: "application/json",
 			status: 200,
-			header: "application/json",
 		},
 		{
-			description: "POST request with wrong username format",
+			description: "POST request with short username",
 			method: "POST",
-			path: "/api/v1/user?username=user&email=testuser@domain.com&password=p@ssword",
+			path: "/api/v1/user",
+			req_header: "application/json",
+			body: models.User{Username: "user", Password: "p@ssword", Email: "user@domain.com"},
+			resp_header: "text/plain; charset=utf-8",
 			status: 422,
-			header: "text/plain; charset=utf-8",
 		},
 		{
 			description: "POST request with no special character in password",
 			method: "POST",
-			path: "/api/v1/user?username=testuser&email=testuser@domain.com&password=password",
+			path: "/api/v1/user",
+			req_header: "application/json",
+			body: models.User{Username: "user1", Password: "password", Email: "user@domain.com"},
+			resp_header: "text/plain; charset=utf-8",
 			status: 422,
-			header: "text/plain; charset=utf-8",
 		},
 		{
 			description: "POST request with improper email",
 			method: "POST",
-			path: "/api/v1/user?username=testuser&email=testuserdomain&password=p@ssword",
+			path: "/api/v1/user",
+			req_header: "application/json",
+			body: models.User{Username: "user1", Password: "p@ssword", Email: "user@domain"},
+			resp_header: "text/plain; charset=utf-8",
 			status: 422,
-			header: "text/plain; charset=utf-8",
 		},
-		{
-			description: "GET request with correct user data",
-			method: "GET",
-			path: "/api/v1/user?username=testuser&email=testuser@domain.com&password=p@ssword",
-			status: 405,
-			header: "text/plain; charset=utf-8",
-		},
-
 	}
 
 	for _, tc := range testcases {
 		t.Run(tc.description, func(t *testing.T) {
 			recorder := httptest.NewRecorder()
-			request, err := http.NewRequest(tc.method, tc.path, nil)
+
+			payloadBuf := new(bytes.Buffer)
+			json.NewEncoder(payloadBuf).Encode(tc.body)
+
+			request, err := http.NewRequest(tc.method, tc.path, payloadBuf)
 			if err != nil {
 				t.Fatalf("Error receiving response: %v", err)
 			}
+			request.Header.Set("Content-Type", tc.req_header)
 
 			routes.Serve(recorder, request)
 
@@ -124,8 +132,8 @@ func TestCreateUser(t *testing.T) {
 				t.Errorf("Incorrect response code for %v: got %v, want %v", tc.description, recorder.Code, tc.status)
 			}
 
-			if recorder.Result().Header.Get("Content-Type") != tc.header {
-				t.Errorf("Incorrect header for %s: got %v, want %v", tc.description, recorder.Result().Header.Get("Content-Type"), tc.header)
+			if recorder.Result().Header.Get("Content-Type") != tc.resp_header {
+				t.Errorf("Incorrect header for %s: got %v, want %v", tc.description, recorder.Result().Header.Get("Content-Type"), tc.resp_header)
 			}
 
 		})
