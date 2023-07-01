@@ -14,12 +14,14 @@ jobs:
     - uses: actions/checkout@v3
 
     - name: Set up Go
-      uses: actions/setup-go@v3
+      uses: actions/setup-go@v4
       with:
-        go-version: 1.20
+        go-version: '1.20'
 
     - name: Prep
-      run: go mod tidy
+      run: |
+        go version
+        go mod tidy
 
     - name: Test
       run: go test -v ./tests/*
