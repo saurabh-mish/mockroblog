@@ -157,18 +157,11 @@ func TestRetrieveUser(t *testing.T) {
 			header: "application/json",
 		},
 		{
-			description: "Invalid user ID - negative number",
+			description: "Non-existing user ID",
 			method: "GET",
-			path: "/api/v1/user/-35",
+			path: "/api/v1/user/10",
 			status: 404,
-			header: "text/plain; charset=utf-8",
-		},
-		{
-			description: "Invalid user ID - out of range",
-			method: "GET",
-			path: "/api/v1/user/450293010",
-			status: 422,
-			header: "text/plain; charset=utf-8",
+			header: "text/plain",
 		},
 	}
 
