@@ -84,10 +84,7 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 
 func RetrieveUser(w http.ResponseWriter, r *http.Request) {
 	userId, _ := strconv.ParseUint(getField(r, 0), 10, 16)
-	// regexp will take integers from 0 to 9; below code unreachable
-	// if err != nil {
-	// 	http.Error(w, "Unable to convert ID to int", http.StatusUnprocessableEntity)
-	// }
+	// regexp will take integers from 0 to 9; _ (err) is unreachable
 
 	var found bool = false
 
@@ -103,7 +100,7 @@ func RetrieveUser(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	if found == false && userId >= 0 {
+	if found == false {
 		w.Header().Set("Content-Type", "text/plain")
 		w.WriteHeader(http.StatusNotFound)
 	}
