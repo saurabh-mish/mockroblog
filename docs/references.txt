@@ -6,3 +6,6 @@ https://quii.gitbook.io/learn-go-with-tests/build-an-application/json
 
 REST F.A.Qs
 https://stackoverflow.com/questions/11746894/what-is-the-proper-rest-response-code-for-a-valid-request-but-an-empty-data
+https://stackoverflow.com/questions/4024271/rest-api-best-practices-where-to-put-parameters
+https://stackoverflow.com/questions/15407719/in-gos-http-package-how-do-i-get-the-query-string-on-a-post-request
+https://stackoverflow.com/questions/3050518/what-http-status-response-code-should-i-use-if-the-request-is-missing-a-required
