@@ -3,3 +3,6 @@ https://benhoyt.com/writings/go-routing/
 
 Learn Go with Tests - JSON, routing, and embedding
 https://quii.gitbook.io/learn-go-with-tests/build-an-application/json
+
+REST F.A.Qs
+https://stackoverflow.com/questions/11746894/what-is-the-proper-rest-response-code-for-a-valid-request-but-an-empty-data
