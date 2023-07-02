@@ -22,10 +22,10 @@ The following operations should be exposed:
 + Create a new post
 + Delete an existing post
 + Retrieve an existing post
-+ List the n most recent posts to a particular community
-+ List the n most recent posts to any community
++ List the n most recent posts in a particular community
++ List the n most recent posts in any community
 
-When retrieving lists of posts, do not include the text or resource URL for the post.
+When retrieving lists of *n* most recent posts, do not include the text or resource URL for the post.
 
 
 **Vote Microservice**
