@@ -2,17 +2,20 @@
 
 We’re going to build services for a web application similar to [reddit][1].
 
-
-
 ## Development
 
 To get started, you will build two microservices for posting and voting functionality, with their automation test suites. After this, you will add two more microservices for account and messaging functionality and their automation test suites.
 
 ### Services
 
-**Posting Microservice**
+**Post Microservice**
 
-Each post should have a title, text, a community ([subreddit][2]), an optional URL linking to a resource (e.g. a news article or picture), a username, and a date the post was made.
+Each post should have the following data:
+
++ Title
++ Text,
++ Community ([subreddit][2])
++ **Optional:** URL link to a resource (e.g. a news article or picture), a username, and a date the post was made.
 
 The following operations should be exposed:
 
@@ -25,7 +28,7 @@ The following operations should be exposed:
 When retrieving lists of posts, do not include the text or resource URL for the post.
 
 
-**Voting Microservice**
+**Vote Microservice**
 
 Each post maintained by the posting microservice can be voted up or down. This service should maintain the number of upvotes and downvotes for each post. A post’s score can be computed by subtracting the number of downvotes from the number of upvotes.
 
@@ -43,7 +46,8 @@ If this service is implemented with a database separate from the posting microse
 
 **Account Microservice**
 
-Each user who registers should have the following data associated with them:
+Each user should have the following data:
+
 + Username
 + Email
 + Karma
