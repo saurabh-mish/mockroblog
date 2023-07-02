@@ -3,15 +3,16 @@ package routes
 import (
 	"encoding/json"
 	"net/http"
-	"time"
+	"fmt"
+	"strconv"
 
 	"mockroblog/pkg/models"
 )
 
 func GetAllPosts(w http.ResponseWriter, r *http.Request) {
 	allPosts := models.Posts{
-		{nil, "title 1", "filler content for post 1", "community 1", "user1", "bit.ly/sa12", time.Time{}, 10, 2},
-		{nil, "title 2", "filler content for post 2", "community 2", "user1", "bit.ly/sa98", time.Time{}, 11, 4},
+		{nil, "title 1", "filler content for post 1", "community 1"},
+		{nil, "title 2", "filler content for post 2", "community 2"},
 	}
 
 	allPostsJSON, _ := json.Marshal(allPosts)
@@ -24,4 +25,3 @@ func GetAllPosts(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 }
-
