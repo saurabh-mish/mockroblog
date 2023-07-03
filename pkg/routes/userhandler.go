@@ -16,6 +16,7 @@ var allUsersJSON = []models.User{
 	{11, "user3", "user3@domain.com", "", 8},
 }
 
+
 func GetAllUsers(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "application/json")
 	w.WriteHeader(http.StatusOK)
@@ -24,32 +25,6 @@ func GetAllUsers(w http.ResponseWriter, r *http.Request) {
 		http.Error(w, "Internal server error", http.StatusInternalServerError)
 	}
 }
-
-// func CreateUserWithQueryParams(w http.ResponseWriter, r *http.Request) {
-// 	// for param, value := range r.URL.Query() {
-// 	// 	log.Println(param, value)
-// 	// }
-
-// 	username := r.URL.Query().Get("username")
-// 	password := r.URL.Query().Get("password")
-// 	email := r.URL.Query().Get("email")
-
-// 	validData := utils.ValidateCreateUser(username, password, email)
-
-// 	if !validData {
-// 		http.Error(w, "Could not validate user data", http.StatusUnprocessableEntity)
-// 		return
-// 	} else {
-// 		w.Header().Set("Content-Type", "application/json")
-// 		w.WriteHeader(http.StatusOK)
-
-// 		_, err := w.Write([]byte("Welcome " + username + "!\nWe have sent a confirmation email to " + email + "\n"))
-// 		if err != nil {
-// 			http.Error(w, "Internal server error", http.StatusInternalServerError)
-// 			return
-// 		}
-// 	}
-// }
 
 
 func CreateUser(w http.ResponseWriter, r *http.Request) {
