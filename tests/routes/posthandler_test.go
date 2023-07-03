@@ -84,7 +84,7 @@ func CreateInvalidPostWithUnstructuredData(t *testing.T) {
 		"community":  "playground"
 	}`)
 
-	request, err := http.NewRequest(http.MethodPost, "/api/v1/user", bytes.NewBuffer(payload))
+	request, err := http.NewRequest(http.MethodPost, "/api/v1/post", bytes.NewBuffer(payload))
 	if err != nil {
 		t.Fatalf("Error receiving response: %v", err)
 	}
@@ -97,8 +97,12 @@ func CreateInvalidPostWithUnstructuredData(t *testing.T) {
 		t.Errorf("Incorrect response code: got %v, want %v", recorder.Code, 422)
 	}
 
-	if recorder.Result().Header.Get("Content-Type") != "text/plain; charset=utf-8;" {
-		t.Errorf("Incorrect header: got %v, want %v", recorder.Result().Header.Get("Content-Type"), "text/plain; charset=utf-8;")
+	if recorder.Body.String() != "Could not parse post payload sasasa" {
+		t.Errorf("Incorrect http error message: got %v, want %v", recorder.Body.String(), "Could not parse post payload")
+	}
+
+	if recorder.Result().Header.Get("Content-Type") != "text/plain; charset=utf-8" {
+		t.Errorf("Incorrect header: got %v, want %v", recorder.Result().Header.Get("Content-Type"), "text/plain; charset=utf-8")
 	}
 }
 

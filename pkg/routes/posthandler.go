@@ -24,7 +24,7 @@ func CreatePost(w http.ResponseWriter, r *http.Request) {
 	var postData models.Post
 	err := json.NewDecoder(r.Body).Decode(&postData)
 	if err != nil {
-		http.Error(w, "Could not parse user payload", http.StatusUnprocessableEntity)
+		http.Error(w, "Could not parse post payload", http.StatusUnprocessableEntity)
 		return
 	}
 

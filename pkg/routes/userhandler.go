@@ -41,22 +41,14 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 	}
 
 	_, err = utils.ValidateUserData(userData.Username, userData.Password, userData.Email)
-
 	if err != nil {
 		http.Error(w, fmt.Sprint(err), http.StatusUnprocessableEntity)
 		return
 	} else {
-		//fmt.Fprintf(w, "User created:\n%v", userData)
 		allUsersJSON = append(allUsersJSON, userData)
-
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
 
-		// _, err := w.Write([]byte("Welcome " + userData.Username + "!\nWe have sent a confirmation email to " + userData.Email + "\n"))
-		// if err != nil {
-		// 	http.Error(w, "Internal server error", http.StatusInternalServerError)
-		// 	return
-		// }
 		fmt.Fprintf(w, "Welcome %v!\nWe have sent a confirmation email to %v", userData.Username, userData.Email)
 	}
 }
