@@ -77,18 +77,19 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusOK)
 
-		_, err := w.Write([]byte("Welcome " + userData.Username + "!\nWe have sent a confirmation email to " + userData.Email + "\n"))
-		if err != nil {
-			http.Error(w, "Internal server error", http.StatusInternalServerError)
-			return
-		}
+		// _, err := w.Write([]byte("Welcome " + userData.Username + "!\nWe have sent a confirmation email to " + userData.Email + "\n"))
+		// if err != nil {
+		// 	http.Error(w, "Internal server error", http.StatusInternalServerError)
+		// 	return
+		// }
+		fmt.Fprintf(w, "Welcome %v!\nWe have sent a confirmation email to %v", userData.Username, userData.Email)
 	}
 }
 
 
 func RetrieveUser(w http.ResponseWriter, r *http.Request) {
 	userId, _ := strconv.ParseUint(getField(r, 0), 10, 16)
-	// regexp will take integers from 0 to 9; _ (err) is unreachable
+	// regexp takes integers from 0 to 9; _ (err) is unreachable
 
 	var found bool = false
 
