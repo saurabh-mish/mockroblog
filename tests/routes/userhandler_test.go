@@ -186,6 +186,14 @@ func TestRetrieveUser(t *testing.T) {
 
 			if recorder.Code != tc.status {
 				t.Errorf("Incorrect response code: got %v, want %v", recorder.Code, tc.status)
+
+				if recorder.Code == 200 {
+					var userData models.Users
+					err = json.NewDecoder(recorder.Body).Decode(&userData)
+					if err != nil {
+						t.Errorf("Unable to parse response to structure: got %v, want %v", recorder.Body, userData)
+					}
+				}
 			}
 
 			if recorder.Result().Header.Get("Content-Type") != tc.header {

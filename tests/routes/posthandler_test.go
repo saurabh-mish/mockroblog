@@ -2,7 +2,6 @@ package routes
 
 import (
 	"encoding/json"
-	//"io/ioutil"
 	"net/http"
 	"net/http/httptest"
 	"testing"
@@ -114,6 +113,14 @@ func TestRetrievePost(t *testing.T) {
 
 			if recorder.Code != tc.status {
 				t.Errorf("Incorrect response code: got %v, want %v", recorder.Code, tc.status)
+
+				if recorder.Code == 200 {
+					var postData models.Posts
+					err = json.NewDecoder(recorder.Body).Decode(&postData)
+					if err != nil {
+						t.Errorf("Unable to parse response to structure: got %v, want %v", recorder.Body, postData)
+					}
+				}
 			}
 
 			if recorder.Result().Header.Get("Content-Type") != tc.header {
