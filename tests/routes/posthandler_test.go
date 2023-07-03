@@ -77,6 +77,32 @@ func TestCreatePost(t *testing.T) {
 }
 
 
+func CreateInvalidPostWithUnstructuredData(t *testing.T) {
+	payload := []byte(`{
+		"title": "Test Title",
+		"post_content": "Sample text in byte array",
+		"community":  "playground"
+	}`)
+
+	request, err := http.NewRequest(http.MethodPost, "/api/v1/user", bytes.NewBuffer(payload))
+	if err != nil {
+		t.Fatalf("Error receiving response: %v", err)
+	}
+
+	request.Header.Set("Content-Type", "application/json")
+	recorder := httptest.NewRecorder()
+	routes.Serve(recorder, request)
+
+	if recorder.Code != 422 {
+		t.Errorf("Incorrect response code: got %v, want %v", recorder.Code, 422)
+	}
+
+	if recorder.Result().Header.Get("Content-Type") != "text/plain; charset=utf-8;" {
+		t.Errorf("Incorrect header: got %v, want %v", recorder.Result().Header.Get("Content-Type"), "text/plain; charset=utf-8;")
+	}
+}
+
+
 func TestRetrievePost(t *testing.T) {
 	testcases := []struct{
 		description string
