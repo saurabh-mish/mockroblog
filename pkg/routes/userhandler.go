@@ -55,18 +55,21 @@ func GetAllUsers(w http.ResponseWriter, r *http.Request) {
 func CreateUser(w http.ResponseWriter, r *http.Request) {
 	if r.Header.Get("Content-Type") != "application/json" {
 		http.Error(w, "Request not acceptable; check header", http.StatusNotAcceptable)
+		return
 	}
 
 	var userData models.User
 	err := json.NewDecoder(r.Body).Decode(&userData)
 	if err != nil {
 		http.Error(w, "Could not parse user payload", http.StatusUnprocessableEntity)
+		return
 	}
 
-	_, err = utils.ValidateCreateUser(userData.Username, userData.Password, userData.Email)
+	_, err = utils.ValidateUserData(userData.Username, userData.Password, userData.Email)
 
 	if err != nil {
 		http.Error(w, fmt.Sprint(err), http.StatusUnprocessableEntity)
+		return
 	} else {
 		//fmt.Fprintf(w, "User created:\n%v", userData)
 		allUsersJSON = append(allUsersJSON, userData)
@@ -77,6 +80,7 @@ func CreateUser(w http.ResponseWriter, r *http.Request) {
 		_, err := w.Write([]byte("Welcome " + userData.Username + "!\nWe have sent a confirmation email to " + userData.Email + "\n"))
 		if err != nil {
 			http.Error(w, "Internal server error", http.StatusInternalServerError)
+			return
 		}
 	}
 }
@@ -95,7 +99,7 @@ func RetrieveUser(w http.ResponseWriter, r *http.Request) {
 			w.WriteHeader(http.StatusOK)
 			err := json.NewEncoder(w).Encode(user)
 			if err != nil {
-				http.Error(w, "Internal server error", http.StatusInternalServerError)
+				http.Error(w, "Unable to retrieve user", http.StatusInternalServerError)
 			}
 		}
 	}
