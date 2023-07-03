@@ -27,7 +27,7 @@ jobs:
       run: go test -v ./tests/*
 
     - name: Code Coverage
-      run: go test ./tests/... -race -coverprofile=cover.out -coverpkg ./...
+      run: go test -v ./tests/* -coverprofile=coverage.out -coverpkg ./...
 
     - name: Upload data to Codecov
       uses: codecov/codecov-action@v3
