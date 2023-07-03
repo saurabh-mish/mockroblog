@@ -7,6 +7,7 @@ import (
 	"strconv"
 
 	"mockroblog/pkg/models"
+	"mockroblog/pkg/utils"
 )
 
 var allPosts = models.Posts{
@@ -14,45 +15,30 @@ var allPosts = models.Posts{
 	{15, "title 2", "filler content for post 2", "community 2"},
 }
 
-func GetAllPosts(w http.ResponseWriter, r *http.Request) {
-
-	// r.ParseForm()
-	// _, hasNumber := r.Form["number"]
-	// _, hasNumberAndCommunity := r.Form["community"]
-
-	// switch {
-	// case hasNumberAndCommunity:
-	// 	RetrieveMostRecentPostsCommunity(w, r)
-	// case hasNumber:
-	// 	RetrieveMostRecentPosts(w, r)
-	// default:
-	// 	http.Error(w, "405 method not allowed", http.StatusMethodNotAllowed)
-	// 	return
-	// }
-
-	// switch {
-	// case r.URL.Query().Get("number") != "" && r.URL.Query().Get("community") != "":
-	// 	RetrieveMostRecentPostsCommunity(w, r)
-	// case r.URL.Query().Get("number") != "":
-	// 	RetrieveMostRecentPosts(w, r)
-	// default:
-	// 	http.Error(w, "Invalid query parameter for posts", http.StatusBadRequest)
-	// 	return
-	// }
-
-	// allPostsJSON, _ := json.Marshal(allPosts)
-	// w.Header().Set("Content-Type", "application/json")
-	// w.WriteHeader(http.StatusOK)
-	// _, err := w.Write([]byte(allPostsJSON))
-	// if err != nil {
-	// 	http.Error(w, "Internal server error", http.StatusInternalServerError)
-	// }
-}
-
 func CreatePost(w http.ResponseWriter, r *http.Request) {
-	w.Header().Set("Content-Type", "text/plain")
-	w.WriteHeader(http.StatusOK)
-	fmt.Fprint(w, "Create post\n")
+	if r.Header.Get("Content-Type") != "application/json" {
+		http.Error(w, "Request not acceptable; check header", http.StatusNotAcceptable)
+		return
+	}
+
+	var postData models.Post
+	err := json.NewDecoder(r.Body).Decode(&postData)
+	if err != nil {
+		http.Error(w, "Could not parse user payload", http.StatusUnprocessableEntity)
+		return
+	}
+
+	_, err = utils.ValidatePostData(postData.Title, postData.Content, postData.Community)
+	if err != nil {
+		http.Error(w, fmt.Sprint(err), http.StatusUnprocessableEntity)
+		return
+	} else {
+		allPosts = append(allPosts, postData)
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusOK)
+
+		fmt.Fprint(w, "Post created successfully!\n")
+	}
 }
 
 func DeletePost(w http.ResponseWriter, r *http.Request) {
@@ -62,12 +48,12 @@ func DeletePost(w http.ResponseWriter, r *http.Request) {
 }
 
 func RetrievePost(w http.ResponseWriter, r *http.Request) {
-	pId, _ := strconv.Atoi(getField(r, 0))
+	postId, _ := strconv.Atoi(getField(r, 0))
 
 	var found bool = false
 
 	for _, post := range allPosts {
-		if post.Id == pId {
+		if post.Id == postId {
 			found = true
 			w.Header().Set("Content-Type", "application/json")
 			w.WriteHeader(http.StatusOK)
