@@ -70,8 +70,8 @@ func TestCreateUser(t *testing.T) {
 		description string
 		method string
 		path string
-		req_header string
-		resp_header string
+		requestHeader string
+		responseHeader string
 		body models.User
 		status int
 	}{
@@ -79,45 +79,45 @@ func TestCreateUser(t *testing.T) {
 			description: "POST request with correct data",
 			method: "POST",
 			path: "/api/v1/user",
-			req_header: "application/json",
+			requestHeader: "application/json",
 			body: models.User{Username: "username", Password: "p@ssword", Email: "user@domain.com"},
-			resp_header: "application/json",
+			responseHeader: "application/json",
 			status: 200,
 		},
 		{
 			description: "POST request with correct data and incorrect header",
 			method: "POST",
 			path: "/api/v1/user",
-			req_header: "text/plain",
+			requestHeader: "text/plain",
 			body: models.User{Username: "username", Password: "p@ssword", Email: "user@domain.com"},
-			resp_header: "text/plain; charset=utf-8",
+			responseHeader: "text/plain; charset=utf-8",
 			status: 406,
 		},
 		{
 			description: "POST request with short username",
 			method: "POST",
 			path: "/api/v1/user",
-			req_header: "application/json",
+			requestHeader: "application/json",
 			body: models.User{Username: "user", Password: "p@ssword", Email: "user@domain.com"},
-			resp_header: "text/plain; charset=utf-8",
+			responseHeader: "text/plain; charset=utf-8",
 			status: 422,
 		},
 		{
 			description: "POST request with no special character in password",
 			method: "POST",
 			path: "/api/v1/user",
-			req_header: "application/json",
+			requestHeader: "application/json",
 			body: models.User{Username: "user1", Password: "password", Email: "user@domain.com"},
-			resp_header: "text/plain; charset=utf-8",
+			responseHeader: "text/plain; charset=utf-8",
 			status: 422,
 		},
 		{
 			description: "POST request with improper email",
 			method: "POST",
 			path: "/api/v1/user",
-			req_header: "application/json",
+			requestHeader: "application/json",
 			body: models.User{Username: "user1", Password: "p@ssword", Email: "user@domain"},
-			resp_header: "text/plain; charset=utf-8",
+			responseHeader: "text/plain; charset=utf-8",
 			status: 422,
 		},
 	}
@@ -133,7 +133,7 @@ func TestCreateUser(t *testing.T) {
 			if err != nil {
 				t.Fatalf("Error receiving response: %v", err)
 			}
-			request.Header.Set("Content-Type", tc.req_header)
+			request.Header.Set("Content-Type", tc.requestHeader)
 
 			routes.Serve(recorder, request)
 
@@ -141,12 +141,120 @@ func TestCreateUser(t *testing.T) {
 				t.Errorf("Incorrect response code for %v: got %v, want %v", tc.description, recorder.Code, tc.status)
 			}
 
-			if recorder.Result().Header.Get("Content-Type") != tc.resp_header {
-				t.Errorf("Incorrect header for %s: got %v, want %v", tc.description, recorder.Result().Header.Get("Content-Type"), tc.resp_header)
+			if recorder.Result().Header.Get("Content-Type") != tc.responseHeader {
+				t.Errorf("Incorrect header for %s: got %v, want %v", tc.description, recorder.Result().Header.Get("Content-Type"), tc.responseHeader)
 			}
-
 		})
 	}
+}
+
+
+func TestCreateUserWithCustomMap(t *testing.T) {
+	t.Run("valid payload with a map of string interface", func(t *testing.T) {
+		payload := map[string]interface{}{
+			"username": "hello",
+			"password": "p@ssw0rd",
+			"email": "someuser@domain.com",
+		}
+
+		postBody, _ := json.Marshal(payload)
+
+		request, err := http.NewRequest(http.MethodPost, "/api/v1/user", bytes.NewBuffer(postBody))
+		if err != nil {
+			t.Fatalf("Error receiving response: %v", err)
+		}
+
+		request.Header.Set("Content-Type", "application/json")
+		recorder := httptest.NewRecorder()
+		routes.Serve(recorder, request)
+
+		if recorder.Code != 200 {
+			t.Errorf("Incorrect response code: got %v, want %v", recorder.Code, 200)
+		}
+
+		if recorder.Result().Header.Get("Content-Type") != "application/json" {
+			t.Errorf("Incorrect header: got %v, want %v", recorder.Result().Header.Get("Content-Type"), "application/json")
+		}
+	})
+
+	t.Run("invalid payload with a map of string interface", func(t *testing.T) {
+		payload := map[string]interface{}{
+			"user": "hello",
+			"pass": "p@ssw0rd",
+			"email": "someuser@domain.com",
+		}
+
+		postBody, _ := json.Marshal(payload)
+
+		request, err := http.NewRequest(http.MethodPost, "/api/v1/user", bytes.NewBuffer(postBody))
+		if err != nil {
+			t.Fatalf("Error receiving response: %v", err)
+		}
+
+		request.Header.Set("Content-Type", "application/json")
+		recorder := httptest.NewRecorder()
+		routes.Serve(recorder, request)
+
+		if recorder.Code != 422 {
+			t.Errorf("Incorrect response code: got %v, want %v", recorder.Code, 422)
+		}
+
+		if recorder.Result().Header.Get("Content-Type") != "text/plain; charset=utf-8" {
+			t.Errorf("Incorrect header: got %v, want %v", recorder.Result().Header.Get("Content-Type"), "text/plain; charset=utf-8")
+		}
+	})
+}
+
+func TestCreateUserWithByteArray(t *testing.T) {
+	t.Run("valid payload with a byte array", func(t *testing.T) {
+		payload := []byte(`{
+			"username": "helloworld",
+			"password": "$omeP@$$",
+			"email":  "someuser@somedomain.com"
+		}`)
+
+		request, err := http.NewRequest(http.MethodPost, "/api/v1/user", bytes.NewBuffer(payload))
+		if err != nil {
+			t.Fatalf("Error receiving response: %v", err)
+		}
+
+		request.Header.Set("Content-Type", "application/json")
+		recorder := httptest.NewRecorder()
+		routes.Serve(recorder, request)
+
+		if recorder.Code != 200 {
+			t.Errorf("Incorrect response code: got %v, want %v", recorder.Code, 200)
+		}
+
+		if recorder.Result().Header.Get("Content-Type") != "application/json" {
+			t.Errorf("Incorrect header: got %v, want %v", recorder.Result().Header.Get("Content-Type"), "application/json")
+		}
+	})
+
+	t.Run("invalid payload with a byte array", func(t *testing.T) {
+		payload := []byte(`{
+			"username": "helloworld",
+			"pword": "$omeP@$$",
+			"email":  "someuser@somedomain.com"
+		}`)
+
+		request, err := http.NewRequest(http.MethodPost, "/api/v1/user", bytes.NewBuffer(payload))
+		if err != nil {
+			t.Fatalf("Error receiving response: %v", err)
+		}
+
+		request.Header.Set("Content-Type", "application/json")
+		recorder := httptest.NewRecorder()
+		routes.Serve(recorder, request)
+
+		if recorder.Code != 422 {
+			t.Errorf("Incorrect response code: got %v, want %v", recorder.Code, 422)
+		}
+
+		if recorder.Result().Header.Get("Content-Type") != "text/plain; charset=utf-8" {
+			t.Errorf("Incorrect header: got %v, want %v", recorder.Result().Header.Get("Content-Type"), "text/plain; charset=utf-8")
+		}
+	})
 }
 
 
