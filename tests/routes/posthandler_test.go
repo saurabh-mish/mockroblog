@@ -32,6 +32,15 @@ func TestCreatePost(t *testing.T) {
 			status: 200,
 		},
 		{
+			description: "Create blogpost with correct data and incorrect header",
+			method: "POST",
+			path: "/api/v1/post",
+			reqHeader: "text/plain",
+			body: models.Post{Title: "English Pangram", Content: "The quick brown fox jumps over the lazy dog", Community: "playground"},
+			respHeader: "text/plain; charset=utf-8",
+			status: 406,
+		},
+		{
 			description: "Create blogpost with incorrect payload",
 			method: "POST",
 			path: "/api/v1/post",

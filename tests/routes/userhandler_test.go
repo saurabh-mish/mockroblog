@@ -85,6 +85,15 @@ func TestCreateUser(t *testing.T) {
 			status: 200,
 		},
 		{
+			description: "POST request with correct data and incorrect header",
+			method: "POST",
+			path: "/api/v1/user",
+			req_header: "text/plain",
+			body: models.User{Username: "username", Password: "p@ssword", Email: "user@domain.com"},
+			resp_header: "text/plain; charset=utf-8",
+			status: 406,
+		},
+		{
 			description: "POST request with short username",
 			method: "POST",
 			path: "/api/v1/user",
